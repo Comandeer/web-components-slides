@@ -1,0 +1,335 @@
+<!doctype HTML>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Web Components</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h2>Web Components</h2>
+					<p>The old new era</p>
+				</section>
+
+				<section>
+					<h2>Why?</h2>
+
+					<ul>
+						<li class="fragment">HTML is not verbose/"semantic" enough.</li>
+						<li class="fragment">There is no standard template system.</li>
+						<li class="fragment">There is no native encapsulation in browsers.</li>
+						<li class="fragment">There is no way to reuse existing HTML.</li>
+						<li class="fragment">Everything is a component, right?</li>
+						<li class="fragment">WE LOVE DECLARATIVE WEB!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111111111one</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Other/Former approaches</h2>
+
+					<ul>
+						<li class="fragment"><a href="https://mustache.github.io/">Mustache</a></li>
+						<li class="fragment"><a href="http://facebook.github.io/react/">React</a></li>
+						<li class="fragment"><a href="https://angularjs.org/">AngularJS 1.x</a></li>
+						<li class="fragment"><a href="https://angular.io/">Angular 2</a></li>
+						<li class="fragment"><a href="https://github.com/css-modules/css-modules">CSS Modules</a></li>
+						<li class="fragment"><a href="https://bem.info">BEM</a></li>
+						<li class="fragment"><a href="https://www.w3.org/TR/xhtml2/">XHTML 2.0</a> + <a href="https://www.w3.org/TR/REC-xml-names/">XML namespaces</a></li>
+						<li class="fragment"><a href="http://html6spec.com/">HTML6</a></li>
+						<li class="fragment"><a href="https://www.w3.org/TR/NOTE-HTMLComponents">HTML Components</a></li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Need for verbosity</h2>
+
+					<ul>
+						<li class="fragment">HTML is semantic only for <b>end user</b>.</li>
+						<li class="fragment">Developers want to be able to <b>read their code</b>.</li>
+						<li class="fragment">The era of "developer semantics".</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Need for verbosity</h2>
+
+					<pre><code class="hljs" data-trim><article>
+	<h2>Slider</h2>
+
+	<section>
+		<h3>Slide</h3>
+		<img src="slide.svg" alt="The beautifully beautiful slide!">
+	</section>
+</article></code></pre>
+
+					<p class="fragment">vs</p>
+
+					<pre class="fragment"><code class="hljs" data-trim=""><x-slider>
+	<x-slide>
+		<x-slide-title>Slide</x-slide-title>
+		<x-slide-image src="slide.svg">The beautifully beautiful slide!</x-slide-image>
+	</x-slide>
+</x-slider></code></pre>
+				</section>
+
+				<section>
+					<h2>Custom elements!</h2>
+
+					<ul>
+						<li class="fragment">Emerging standard for creating our own tags with semantics defined by us.</li>
+						<li class="fragment">Easy way to extend existing tags.</li>
+						<li class="fragment">Element's lifecycles.</li>
+						<li class="fragment">Live detection and enhancement of custom elements.</li>
+						<li class="fragment">Forced to use special name convention – <code>prefix-name</code>.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>New custom element</h2>
+
+					<pre class="fragment"><code class="hljs" data-trim>class XSlider extends HTMLElement {}
+window.customElements.define( 'x-slider', XSlider );</code></pre>
+
+					<pre class="fragment"><code class="hljs" data-trim><x-slider></x-slider></code></pre>
+				</section>
+
+				<section>
+					<h2>Extending existing element</h2>
+
+					<pre class="fragment"><code class="hljs" data-trim>class XButton extends HTMLButtonElement {}
+window.customElements.define( 'x-button', XButton, { extends: 'button' } );</code></pre>
+
+					<pre class="fragment"><code class="hljs" data-trim><button is="x-button"></button></code></pre>
+				</section>
+
+				<section>
+					<h2>Fundamental problems</h2>
+
+					<ul>
+						<li class="fragment">No semantics by default…</li>
+						<li class="fragment">…therefore no accessibility by default.</li>
+						<li class="fragment"><a href="https://www.w3.org/WAI/intro/aria.php">ARIA</a> to the rescue!</li>
+						<li class="fragment"><a href="https://www.paciellogroup.com/blog/2016/04/custom-element-semantics/"><code>taco-button</code> example</a></li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Native template system</h2>
+
+					<ul>
+						<li class="fragment">All existing template systems are string-based…</li>
+						<li class="fragment">…but DOM is a tree.</li>
+						<li class="fragment">How to utilize tree strenghts in templates?</li>
+						<li class="fragment">How to "switch off" some DOM subtrees (e.g. force them not to fetch images)?</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2><code>template</code></h2>
+
+					<ul>
+						<li class="fragment"><code>template</code> contains inactive DOM subtree.</li>
+						<li class="fragment">Only inserting its content into some "live" site's element activates this subtree.</li>
+						<li class="fragment">What's more, <code>template</code> just reuses good old <code>DocumentFragment</code>!</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Working with <code>template</code></h2>
+
+					<pre class="fragment"><code class="hljs" data-trim><template id="image">
+	<img src="" alt="">
+</template>
+<div id="image-container"></div></code></pre>
+
+					<pre class="fragment"><code class="hljs" data-trim>const template = document.getElementById('image').content;
+const img = template.querySelector( 'img' );
+
+img.src = '/whatever.png';
+img.alt = 'Just a placeholder.';
+
+const parsed = document.importNode( template, true );
+
+document.getElementById( 'image-container' ).appendChild( parsed );</code></pre>
+				</section>
+
+				<section>
+					<h2>Need for encapsulation</h2>
+
+					<ul>
+						<li class="fragment">HTML &amp; CSS are leaky by default.</li>
+						<li class="fragment">Everything exists in a global scope.</li>
+						<li class="fragment">Everything is interacting with everything.</li>
+						<li class="fragment">There is no way to hide implementation details (<code>video</code> tag case).</li>
+						<li class="fragment">BEM is helping, but it's merely a convention.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Two DOMs</h2>
+
+					<ul>
+						<li class="fragment">Light DOM</li>
+						<li class="fragment">Shadow DOM</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>The shadow boundary</h2>
+
+					<li class="fragment">It hides all implementation details.</li>
+					<li class="fragment">All styles inside it are scoped.</li>
+					<li class="fragment">Nothing is exposed to the Light DOM…</li>
+					<li class="fragment">…so we are forced to create sane API.</li>
+				</section>
+
+				<section>
+					<h2>Light DOM vs Shadow DOM</h2>
+
+					<pre class="fragment"><code class="hljs" data-trim><x-collapsible>
+	<button>Collapse</button>
+
+	<div>
+		<p>Some content</p>
+	</div>
+	<script>button.onclick = collapseDiv;</script>
+</x-collapsible></code></pre>
+
+					<p class="fragment">vs</p>
+
+					<pre class="fragment"><code class="hljs" data-trim><x-collapsible>
+	<p>Some content</p>
+</x-collapsible></code></pre>
+
+					<p class="fragment"><a href="https://w3c.github.io/webcomponents/spec/shadow/#shadow-dom-example">More complicated example</a></p>
+				</section>
+
+
+
+				<section>
+					<h2>Slots</h2>
+
+					<ul>
+						<li class="fragment">Slots are just placeholders.</li>
+						<li class="fragment">They wait for our content.</li>
+						<li class="fragment">It has a fancy name: "Nodes Distribution Algorithm".</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>HTML as a module</h2>
+
+					<ul>
+						<li class="fragment">We can reuse JS by modularizing it and using <code>script</code> tag.</li>
+						<li class="fragment">We can reuse CSS by putting it into the separate file.</li>
+						<li class="fragment">For the very long time the only way to do this with HTML was using an <code>iframe</code>.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>HTML Imports</h2>
+
+					<p class="fragment">Just put your component into separate file:</p>
+					<pre class="fragment"><code class="hljs" data-trim><style>[…]</style>
+<script>[…]</script></code></pre>
+					<p class="fragment">And import it from your application's main file:</p>
+					<pre class="fragment"><code class="hljs" data-trim><link rel="import" href="component.html"></code></pre>
+				</section>
+
+				<section>
+					<h2>HTML Imports and ES Modules</h2>
+
+					<ul>
+						<li class="fragment">They are able to coexist…</li>
+						<li class="fragment">…but they are two very similar mechanisms, yet totally separate.</li>
+						<li class="fragment">Will HTML Imports become <a href="https://github.com/w3c/webcomponents/blob/gh-pages/proposals/HTML-Imports-and-ES-Modules.md">a subtype of ES Modules</a>?</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Standarization</h2>
+
+					<ul>
+						<li class="fragment">The main goal is to upstream every WC part into DOM and/or HTML standard…</li>
+						<li class="fragment">…which is already partly done.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Current browser support</h2>
+
+					<ul>
+						<li class="fragment">Can I Use lies!</li>
+						<li class="fragment">Only Chrome supports custom elements – but in their former version.</li>
+						<li class="fragment">Only Chrome supports Shadow DOM – in its former and current versions.</li>
+						<li class="fragment">Only Chrome is even willing to support HTML Imports…</li>
+						<li class="fragment">Still <a href="http://webroad.pl/javascript/3505-web-components">in flux</a> – after <strong>3 years</strong>.</li>
+						<li class="fragment">Better go React then!</li>
+						<li class="fragment">Polymer? <a href="http://tutorials.comandeer.pl/polymer.html" hreflang="pl">Nope!</a></li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Common pitfalls</h2>
+
+					<ul>
+						<li class="fragment">Not everything is a component…</li>
+						<li class="fragment">…at least not <a href="https://shop.polymer-project.org/">a declarative one</a>!</li>
+						<li class="fragment">Non-UI related logic inside custom tags? Bah!</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>2 pillars of architecture</h2>
+
+					<ul>
+						<li class="fragment">Totally independent UI, created with the use of web components.</li>
+						<li class="fragment">Business/application/non-UI logic, created with… PURE JS™.</li>
+						<li class="fragment">Events as the way to communicate between these two separate worlds.</li>
+						<li class="fragment">Just like in <a href="http://www.slideshare.net/nzakas/scalable-javascript-application-architecture">Zakas's idea</a>.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>That's it, guys!</h2>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
